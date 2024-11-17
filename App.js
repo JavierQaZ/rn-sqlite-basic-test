@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet} from 'react-native';
 import * as SQLite from 'expo-sqlite'
 import { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
@@ -11,19 +11,6 @@ import CardScreen from './screens/CardScreen';
 export default function App() {
 
   const Stack = createStackNavigator()
-
-  const [collections, setCollections] = useState([])
-  const [collectionID, setCollectionID] = useState('')
-  const [collectionName, setCollectionName] = useState('')
-  const [collectionImageUri, setCollectionImageUri] = useState('')
-
-  const [cards, setCards] = useState([])
-  const [cardID, setCardID] = useState('')
-  const [cardName, setCardName] = useState('')
-  const [cardImageUri, setCardImageUri] = useState('')
-  const [cardState, setCardState] = useState('')
-
-  const [refresh, setRefresh] = useState(false)
 
   async function createDatabase() {
     const db = await SQLite.openDatabaseAsync('OwnDB')
@@ -44,52 +31,9 @@ export default function App() {
       );`);
   }
 
-  const insertCollection = async () => {
-    const db = await SQLite.openDatabaseAsync('OwnDB');
-    const result = await db.runAsync(`INSERT INTO collections (name, coverImage) VALUES (?, ?)`, collectionName, collectionImageUri)
-    setRefresh(!refresh)
-  }
-
-  const insertCard = async () => {
-    const db = await SQLite.openDatabaseAsync('OwnDB');
-    const result= await db.runAsync(`INSERT INTO cards (id, collectionId, name, image, state) VALUES (?, ?, ?, ?, ?)`, cardID, collectionID, cardName, cardImageUri, cardState ? 1 : 0)
-  }
-
-  const getCollections = async () => {
-    const db = await SQLite.openDatabaseAsync('OwnDB')
-    const allCollections = await db.getAllAsync(`SELECT * FROM collections`)
-    setCollections(allCollections)
-  }
-
-  const handleCollectionName = (e) => {
-    setCollectionName(e)
-  }
-  const handleCollectionImageUri = (e) => {
-    setCollectionImageUri(e)
-  }
-
-  const handleCardID = (e) => {
-    setCardID(e)
-  }
-
-  const handleCardName = (e) => {
-    setCardName(e)
-  }
-  const handleCardImageUri = (e) => {
-    setCardImageUri(e)
-  }
-  const handleCardState = (e) => {
-    setCardState(e)
-  }
-
   useEffect(() => {
     createDatabase()
-    getCollections()
   }, [])
-
-  useEffect(() => {
-    getCollections()
-  }, [refresh])
 
   return (
     <NavigationContainer>
