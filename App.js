@@ -5,6 +5,9 @@ import { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import CollectionScreen from './screens/CollectionScreen';
+import CardScreen from './screens/CardScreen';
+
 export default function App() {
 
   const Stack = createStackNavigator()
@@ -89,31 +92,35 @@ export default function App() {
   }, [refresh])
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <Text>NOMBRE</Text>
-      <TextInput
-        onChangeText={(e) => handleCollectionName(e)}/>
-      <Text>IMAGE</Text>
-      <TextInput
-        onChangeText={(e) => handleCollectionImageUri(e)}/>
-
-      <TouchableOpacity onPress={insertCollection}>
-        <Text>Añadir Collecion</Text>
-      </TouchableOpacity>
-
-      <View>
-        <Text>Collections:</Text>
-        {collections.map((e) => {
-          return (
-            <View key = {e.id}>
-              <Text> Name: {e.name} </Text>
-              <Text> ImageUri: {e.coverImage} </Text>
-            </View>
-          )
-        })}
-      </View>
-    </View>
+    <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: { backgroundColor: '#4D0B0A' },
+            headerTintColor: '#ffffff',
+            contentStyle: { backgroundColor: '#614c4c' },
+          }}
+        >
+          <Stack.Screen
+            name="OwnCollection"
+            component={CollectionScreen}
+            options={{ title: 'OwnCollection' }}
+          />
+          <Stack.Screen
+            name="Collection Name"
+            component={CardScreen}
+            options={({ route }) => ({
+              title: route.params.collectionName || 'Cartas',
+            })}
+          />
+          {/* <Stack.Screen
+            name="Card Name"
+            component={SelectedCardScreen}
+            options={({ route }) => ({
+              title: route.params.cardName || 'Detalles de la Carta',
+            })}
+          /> */}
+        </Stack.Navigator>
+      </NavigationContainer>
   );
 }
 
